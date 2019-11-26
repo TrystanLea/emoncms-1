@@ -24,7 +24,7 @@ RUN phpenmod mosquitto
 RUN phpenmod redis
 
 # Set timezone for php
-RUN sed -i 's/date.timezone \=/date.timezone \= Africa\/Johannesburg/g' /etc/php/7.2/apache2/php.ini
+RUN sed -i 's/date.timezone \=/date.timezone \= Europe\/London/g' /etc/php/7.2/apache2/php.ini
 
 # Enable modrewrite for Apache2
 RUN a2enmod rewrite
@@ -51,22 +51,14 @@ ADD crontab /root/crontab
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Create required data repositories for emoncms feed engine
-RUN mkdir /var/lib/phpfiwa
-RUN mkdir /var/lib/phpfina
-RUN mkdir /var/lib/phptimeseries
-RUN mkdir /var/lib/timestore
+RUN mkdir /var/opt/emoncms/phpfina
+RUN mkdir /var/opt/emoncms/phptimeseries
 
 # Create log directories & files
 RUN mkdir /var/log/emoncms
-RUN touch /var/log/emoncms.log
-RUN touch /var/log/service-runner.log
-RUN touch /var/log/cron.log
-RUN chmod 666 /var/log/emoncms.log
-RUN chmod 666 /var/log/service-runner.log
-RUN chmod 666 /var/log/cron.log
 
 # Expose them as volumes for mounting by host
-VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/lib/phpfiwa", "/var/lib/phpfina", "/var/lib/phptimeseries", "/var/www/html", "/var/spool/cron/crontabs/", "/home/pi"]
+VOLUME ["/etc/mysql", "/var/lib/mysql", "/var/opt/emoncms/phpfina", "/var/opt/emoncms/phptimeseries", "/var/www/html", "/var/spool/cron/crontabs/", "/home/pi"]
 
 EXPOSE 80 3306
 
